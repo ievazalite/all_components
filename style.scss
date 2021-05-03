@@ -1,22 +1,53 @@
-body{
-    background: #E5E5E5;
-}
-.tickets{
-    width: 1122px;
+
+body {
+    background: #e5e5e5;
+  }
+  
+  .tickets {
     height: 942px;
-    top: 128px;
-    left: 285px;
+    width: 1122px;
     background: #fff;
     border: 1px solid #dfe0eb;
     box-sizing: border-box;
     border-radius: 8px;
-
+  
     &__header {
-        padding: 32px;
+      padding: 32px;
     }
-}
-h1{
+  
+    &__list {
+      width: 100%;
+      th {
+        font-size: 14px;
+        line-height: 18px;
+        letter-spacing: 0.2px;
+        color: #9fa2b4;
+        text-align: left;
+      }
+    }
+  }
+  
+  h1 {
     font-size: 19px;
     line-height: 24px;
     letter-spacing: 0.4px;
-}
+  }
+  
+  .priority {
+    text-transform: uppercase;
+    font-size: 11px;
+    border-radius: 100px;
+    
+  }
+  
+  .priority_high {
+    background: #f12b2c;
+  }
+  
+  .priority_low {
+    background: #fec400;
+  }
+  
+  .priority_normal {
+    background: #29cc97;
+  }

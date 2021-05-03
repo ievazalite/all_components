@@ -1,34 +1,93 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.scss">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <title>Document</title>
-</head>
-<body>
-    
-    <div id='app'>
-        <input type='text' v-model='title'>
+<!DOCTYPE html>
 
-        <div class="tickets">
-            <div class='tickets__header'>
-                <h1 v-html='title'>{{title}}</h1>
-            </div>
+<link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<div id="app">
+    <button @click="requestApi()" >request</button>
+    <input type="text" v-model="title">
+
+    <div class="tickets">
+        <div class="tickets__header">
+            <h1 v-text="title"></h1>
+            <tickets_table :columns="createRowHeaders()">
+                <tickets_row v-for="ticket in ticket_list" :row="ticket"></tickets_row>
+            </tickets_table>
         </div>
-
     </div>
-
-</body>
+</div>
 
 <script>
+    Vue.component('tickets_table', {
+        props: ["columns"],
+        template: `
+<table class="tickets__list">
+    <tr v-html="columns">
+    </tr>
+    <slot></slot>
+</table>
+        `
+    });
+
+    Vue.component('tickets_row', {
+        props: ['row'],
+        template: `
+        <tr>
+            <td>
+                <img v-if="row.image_url" v-bind:src="row.image_url">
+                <template v-if="!row.image_url">
+                    <i>No image</i>
+                    <span>🙎🏻‍♂️</span>
+                </template>
+                
+                <span>{{row.details}}</span>
+            </td>
+            <td>
+                {{row.customer_name}}
+            </td>
+            <td>{{row.date}}</td>
+            <td>
+                <span :class="'priority priority_' + row.priority">{{row.priority}}</span>
+            </td>
+        </tr>`
+    });
+
     let app = new Vue({
-        el: '#app',
+        el: "#app",
         data: {
-            title: '<i>All tickets</i>'
+            title: "All tickets",
+            ticket_titles: ["Ticket details", "Customer name", "Date", "Priority"],
+            ticket_list: []
+        },
+        methods: {
+            createRowHeaders: function () {
+                let headers = this.ticket_titles;
+
+                let output = '';
+                for (let header of headers) {
+                    output += "<th>" + header + "</th>";
+                }
+
+                return output;
+            },
+            requestApi: function () {
+                return request("api.php");
+            }
         }
     });
-</script>
 
-</html>
+    function request(url) {
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                app.ticket_list = JSON.parse(this.responseText);
+            }
+        }
+
+        xhttp.open('post', url);
+        xhttp.send();
+    }
+
+    request("api.php");
+</script>
